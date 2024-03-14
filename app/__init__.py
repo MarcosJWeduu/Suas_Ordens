@@ -3,7 +3,6 @@ from .views.auth import auth_bp
 from .views.dashboard import dashboard_bp
 from .models.database import init_db
 from flask_sqlalchemy import SQLAlchemy
-from app.models import User
 
 db = SQLAlchemy()
 
