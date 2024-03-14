@@ -1,20 +1,23 @@
 from flask import Flask
-from .views.auth import auth_bp
-from .views.dashboard import dashboard_bp
-from .models.database import init_db
 from flask_sqlalchemy import SQLAlchemy
-
-db = SQLAlchemy()
+from app.models.models import db
+import os
 
 def create_app():
     app = Flask(__name__)
-    
-    # Configurações do aplicativo (opcional)
-    
-    # Inicializa o banco de dados
-    init_db(app)
+    app.secret_key = os.urandom(24)
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-    # Registra os blueprints
+    db.init_app(app)
+
+    # Criar o banco de dados se não existir
+    with app.app_context():
+        db.create_all()
+
+    # Registrar os blueprints
+    from app.views.auth import auth_bp
+    from app.views.dashboard import dashboard_bp
     app.register_blueprint(auth_bp)
     app.register_blueprint(dashboard_bp)
 
